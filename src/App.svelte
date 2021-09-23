@@ -4,7 +4,6 @@
   let inputText: string = "";
   const SEED = "suostu rakentumaan tarinaksi";
   let seedIds = [];
-  let result = {};
   let ins = [];
   let outs = [];
 
@@ -33,8 +32,6 @@
 
   function checkLetters() {
     const inputIds = verseToIds(inputText);
-
-    console.log({ inputIds });
     const newIns = [];
     const newOuts = [];
     inputIds.forEach((item) => {
@@ -43,24 +40,13 @@
       } else {
         newOuts.push(item);
       }
-      ins = newIns;
-      outs = newOuts;
-      console.log(ins, outs);
     });
+    ins = newIns;
+    outs = newOuts;
   }
 
   onMount(async () => {
     seedIds = verseToIds(SEED);
-    result = {
-      in: seedIds.reduce(
-        (item, soFar) => ({
-          ...soFar,
-          [item]: false,
-        }),
-        {}
-      ),
-      out: {},
-    };
   });
 </script>
 
@@ -90,14 +76,13 @@
 <style>
   main {
     text-align: center;
-    padding: 3em 1em;
-    margin: 0 auto;
-  }
-
-  h1 {
-    text-transform: uppercase;
-    font-size: 4em;
-    font-weight: 100;
+    padding: 4em 1em;
+    margin: 4rem auto;
+    background: #fafafa;
+    width: 660px;
+    max-width: 95%;
+    border-radius: 3px;
+    box-shadow: 2px 3px 4px #0003;
   }
   .text-input {
     background: hsl(45, 100%, 80%);
@@ -120,12 +105,13 @@
     text-transform: uppercase;
     font-family: "Courier New", Courier, monospace;
     margin: 1rem;
+    min-height: 2rem;
   }
   .jes {
-    color: hsl(90, 100%, 60%);
+    color: hsl(90, 100%, 50%);
   }
   .nou {
-    color: hsl(45, 100%, 20%);
+    color: hsl(45, 100%, 15%);
   }
   .extra {
     color: hsl(0, 100%, 40%);

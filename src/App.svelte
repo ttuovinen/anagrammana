@@ -1,34 +1,16 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { verseToIds } from "./utils/common";
+
+  const SEED = "suostu rakentumaan tarinaksi";
 
   let inputText: string = "";
-  const SEED = "suostu rakentumaan tarinaksi";
-  let seedIds = [];
-  let ins = [];
-  let outs = [];
+  let seedIds: string[] = [];
+  let ins: string[] = [];
+  let outs: string[] = [];
 
-  $: isOk = seedIds.length && seedIds.length === ins.length && !outs.length;
+  $: perfect = seedIds.length && seedIds.length === ins.length && !outs.length;
   $: tooMuch = !!outs.length;
-
-  const specialChars = /[^a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ0-9]/gi;
-
-  const verseToIds = (verse: string) => {
-    const processed = verse
-      .toLowerCase()
-      .replace(specialChars, "")
-      .split("")
-      .sort()
-      .join("");
-
-    console.log({ processed });
-
-    return processed
-      .split("")
-      .map(
-        (char: string, idx: number) =>
-          char + processed.substring(0, idx).split(char).length
-      );
-  };
 
   function checkLetters() {
     const inputIds = verseToIds(inputText);
@@ -45,7 +27,7 @@
     outs = newOuts;
   }
 
-  onMount(async () => {
+  onMount(() => {
     seedIds = verseToIds(SEED);
   });
 </script>
@@ -54,7 +36,7 @@
   <label class="control-item">
     <input
       class="text-input"
-      class:text-input--ok={isOk}
+      class:text-input--perfect={perfect}
       class:text-input--toomuch={tooMuch}
       type="text"
       bind:value={inputText}
@@ -90,7 +72,7 @@
     max-width: 100%;
     font-family: "Courier New", Courier, monospace;
   }
-  .text-input--ok {
+  .text-input--perfect {
     background: hsl(90, 100%, 85%);
     box-shadow: 0 0 2px 2px green;
   }

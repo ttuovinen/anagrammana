@@ -30,8 +30,8 @@
   />
 </label>
 <div class="l-row">
-  {#each seedIds as item}
-    <div class={missing.includes(item) ? "l c-wait" : "l c-go"}>
+  {#each missing as item}
+    <div class="l c-wait">
       {item.charAt(0)}
     </div>
   {/each}

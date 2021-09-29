@@ -1,5 +1,6 @@
 type AnagramData = {
-  item: string;
+  verse: string;
+  justLetters?: string;
   missing: string[];
   extra: string[];
 };

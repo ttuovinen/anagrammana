@@ -7,6 +7,7 @@
   let inputText: string = "";
   let faultyRows: string[] = [];
   let anagrams: AnagramData[] = [];
+  let duplicates: string[] = [];
 
   $: faultyAnagrams = anagrams.filter(
     (item) => item.missing.length || item.extra.length
@@ -32,7 +33,8 @@
           .map((item) => {
             let [missing, extra] = checkLetters(seedIds, item);
             return {
-              item,
+              verse: item,
+              justLetters: item.toLowerCase().replace(specialChars, ""),
               missing,
               extra,
             };
@@ -43,6 +45,19 @@
       }
     });
     anagrams = data;
+
+    // Check for possible duplicates
+    const buckets = {};
+
+    data.forEach((item) => {
+      buckets[item.justLetters] = [
+        ...(buckets[item.justLetters] || []),
+        item.verse,
+      ];
+    });
+    duplicates = Object.values(buckets)
+      .filter((items: string[]) => items.length > 1)
+      .map((items: string[]) => items.join(" | "));
   }
 </script>
 
@@ -66,6 +81,16 @@
         {#each faultyAnagrams as item}
           <AnagramRow data={item} />
         {/each}
+      </div>
+    {/if}
+    {#if duplicates.length}
+      <h3 class="c-wait">Possible duplicates</h3>
+      <div class="flex-col gap-1">
+        <ul>
+          {#each duplicates as item}
+            <li>{item}</li>
+          {/each}
+        </ul>
       </div>
     {/if}
   {/if}

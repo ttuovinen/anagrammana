@@ -3,8 +3,8 @@
 </script>
 
 <div class="anagram-row">
-  <div class="anagram">{data.item}</div>
-  <ul class="m0">
+  <div class="anagram">{data.verse}</div>
+  <ul>
     {#if data.missing.length > 0}
       <li>
         <span class="small-label">{"MISSING "}</span>

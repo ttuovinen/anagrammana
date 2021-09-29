@@ -5,7 +5,6 @@
   export let seedIds: string[] = [];
 
   let inputText: string = "";
-  let faultyRows: string[] = [];
   let anagrams: AnagramData[] = [];
   let duplicates: string[] = [];
 
@@ -19,30 +18,35 @@
       .split("\n")
       .map((item) => item.trim())
       .filter((item) => item);
+    // find all possible anagrams in row
     rows.forEach((row) => {
-      const stripped = row.toLowerCase().replace(specialChars, "");
-      if (
-        stripped.length > 1.5 * seedIds.length &&
-        stripped.length % seedIds.length
-      ) {
-        faultyRows.push(row);
-      } else {
-        // const foundAnagrams = row.match(new RegExp(`.{1,${seedIds.length}}`, "g"));
-        const foundAnagrams = [row]; // TMP
-        foundAnagrams
-          .map((item) => {
-            let [missing, extra] = checkLetters(seedIds, item);
-            return {
-              verse: item,
-              justLetters: item.toLowerCase().replace(specialChars, ""),
-              missing,
-              extra,
-            };
-          })
-          .forEach((item) => {
-            data.push(item);
-          });
+      let index = 0;
+      let letterCounter = 0;
+      const foundAnagrams = [];
+      for (let i = 0; i < row.length; i++) {
+        const char = row[i];
+        foundAnagrams[index] = (foundAnagrams[index] || "") + char;
+        if (!char.toLowerCase().match(specialChars)) {
+          letterCounter++;
+          if (letterCounter % seedIds.length === 0) {
+            index++;
+          }
+        }
       }
+      foundAnagrams
+        .map((item) => {
+          let [missing, extra] = checkLetters(seedIds, item);
+          return {
+            verse: item.trim(),
+            justLetters: item.toLowerCase().replace(specialChars, ""),
+            missing,
+            extra,
+          };
+        })
+        .filter((item) => item.justLetters)
+        .forEach((item) => {
+          data.push(item);
+        });
     });
     anagrams = data;
 
@@ -63,9 +67,6 @@
 
 <div class="flex-col gap-1">
   <div>
-    <div class="text-center">
-      <i>Works only with one anagram per line (for now)</i>
-    </div>
     <label>
       <textarea class="w-100" rows="8" bind:value={inputText} />
     </label>
@@ -86,11 +87,11 @@
     {#if duplicates.length}
       <h3 class="c-wait">Possible duplicates</h3>
       <div class="flex-col gap-1">
-        <ul>
+        <ol>
           {#each duplicates as item}
-            <li>{item}</li>
+            <li class="mb-1">{item}</li>
           {/each}
-        </ul>
+        </ol>
       </div>
     {/if}
   {/if}

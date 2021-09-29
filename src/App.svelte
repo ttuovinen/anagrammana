@@ -51,7 +51,7 @@
   main {
     margin: 0 auto;
     padding: 4rem 0;
-    width: 660px;
+    width: 800px;
     max-width: 95%;
   }
   .section {

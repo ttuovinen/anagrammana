@@ -89,10 +89,10 @@ button:focus {
   width: 100%;
 }
 .c-go {
-  color: hsl(90, 100%, 50%);
+  color: hsl(90, 100%, 35%);
 }
 .c-wait {
-  color: hsl(44, 98%, 35%);
+  color: hsl(44, 100%, 35%);
 }
 .c-stop {
   color: hsl(0, 100%, 40%);

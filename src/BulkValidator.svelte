@@ -13,8 +13,8 @@
   );
 
   function handleBulkCheck() {
-    const data = [];
-    const rows = inputText
+    const data: AnagramData[] = [];
+    const rows: string[] = inputText
       .split("\n")
       .map((item) => item.trim())
       .filter((item) => item);
@@ -35,7 +35,7 @@
         // Separate anagram candidates in longer rows
         let index = 0;
         let letterCounter = 0;
-        const anagramCandidates = [];
+        const anagramCandidates: string[] = [];
         for (let i = 0; i < row.length; i++) {
           const char = row[i];
           anagramCandidates[index] = (anagramCandidates[index] || "") + char;
@@ -87,11 +87,15 @@
     <button on:click={handleBulkCheck}>Check</button>
   </div>
   {#if anagrams.length}
-    <h3>
+    <h3 class:c-go={!faultyAnagrams.length}>
       {`${anagrams.length - faultyAnagrams.length} / ${anagrams.length} OK`}
     </h3>
     {#if faultyAnagrams.length}
-      <h3 class="c-stop">{`${faultyAnagrams.length} faulty anagrams`}</h3>
+      <h3 class="c-stop">
+        {`${faultyAnagrams.length} faulty ${
+          faultyAnagrams.length > 1 ? "anagrams" : "anagram"
+        }`}
+      </h3>
       <div class="flex-col gap-1">
         {#each faultyAnagrams as item}
           <AnagramRow data={item} />

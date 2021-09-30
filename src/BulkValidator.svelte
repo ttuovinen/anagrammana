@@ -18,35 +18,49 @@
       .split("\n")
       .map((item) => item.trim())
       .filter((item) => item);
-    // find all possible anagrams in row
     rows.forEach((row) => {
-      let index = 0;
-      let letterCounter = 0;
-      const foundAnagrams = [];
-      for (let i = 0; i < row.length; i++) {
-        const char = row[i];
-        foundAnagrams[index] = (foundAnagrams[index] || "") + char;
-        if (!char.toLowerCase().match(specialChars)) {
-          letterCounter++;
-          if (letterCounter % seedIds.length === 0) {
-            index++;
-          }
-        }
-      }
-      foundAnagrams
-        .map((item) => {
-          let [missing, extra] = checkLetters(seedIds, item);
-          return {
-            verse: item.trim(),
-            justLetters: item.toLowerCase().replace(specialChars, ""),
+      if (row.replace(specialChars, "").length < 1.5 * seedIds.length) {
+        // Assume only one anagram candidate for shorter rows
+        const justLetters = row.toLowerCase().replace(specialChars, "");
+        if (justLetters) {
+          let [missing, extra] = checkLetters(seedIds, row);
+          data.push({
+            verse: row.trim(),
+            justLetters,
             missing,
             extra,
-          };
-        })
-        .filter((item) => item.justLetters)
-        .forEach((item) => {
-          data.push(item);
-        });
+          });
+        }
+      } else {
+        // Separate anagram candidates in longer rows
+        let index = 0;
+        let letterCounter = 0;
+        const anagramCandidates = [];
+        for (let i = 0; i < row.length; i++) {
+          const char = row[i];
+          anagramCandidates[index] = (anagramCandidates[index] || "") + char;
+          if (!char.toLowerCase().match(specialChars)) {
+            letterCounter++;
+            if (letterCounter % seedIds.length === 0) {
+              index++;
+            }
+          }
+        }
+        anagramCandidates
+          .map((item) => {
+            let [missing, extra] = checkLetters(seedIds, item);
+            return {
+              verse: item.trim(),
+              justLetters: item.toLowerCase().replace(specialChars, ""),
+              missing,
+              extra,
+            };
+          })
+          .filter((item) => item.justLetters)
+          .forEach((item) => {
+            data.push(item);
+          });
+      }
     });
     anagrams = data;
 

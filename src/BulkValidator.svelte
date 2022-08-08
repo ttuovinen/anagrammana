@@ -1,6 +1,6 @@
 <script lang="ts">
   import AnagramRow from "./AnagramRow.svelte";
-  import { checkLetters, specialChars } from "./utils/common";
+  import { checkLetters, nonAlphanumeric } from "./utils/common";
 
   export let seedIds: string[] = [];
 
@@ -19,9 +19,9 @@
       .map((item) => item.trim())
       .filter((item) => item);
     rows.forEach((row) => {
-      if (row.replace(specialChars, "").length < 1.5 * seedIds.length) {
+      if (row.replace(nonAlphanumeric, "").length < 1.5 * seedIds.length) {
         // Assume only one anagram candidate for shorter rows
-        const justLetters = row.toLowerCase().replace(specialChars, "");
+        const justLetters = row.toLowerCase().replace(nonAlphanumeric, "");
         if (justLetters) {
           let [missing, extra] = checkLetters(seedIds, row);
           data.push({
@@ -39,7 +39,7 @@
         for (let i = 0; i < row.length; i++) {
           const char = row[i];
           anagramCandidates[index] = (anagramCandidates[index] || "") + char;
-          if (!char.toLowerCase().match(specialChars)) {
+          if (!char.toLowerCase().match(nonAlphanumeric)) {
             letterCounter++;
             if (letterCounter % seedIds.length === 0) {
               index++;
@@ -51,7 +51,7 @@
             let [missing, extra] = checkLetters(seedIds, item);
             return {
               verse: item.trim(),
-              justLetters: item.toLowerCase().replace(specialChars, ""),
+              justLetters: item.toLowerCase().replace(nonAlphanumeric, ""),
               missing,
               extra,
             };
@@ -82,7 +82,12 @@
 <div class="flex-col gap-1">
   <div>
     <label>
-      <textarea class="w-100" rows="8" bind:value={inputText} />
+      <textarea
+        class="w-100"
+        rows="8"
+        bind:value={inputText}
+        placeholder="Paste your anagrams here"
+      />
     </label>
     <button on:click={handleBulkCheck}>Check</button>
   </div>

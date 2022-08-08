@@ -1,11 +1,13 @@
 <script lang="ts">
   import BulkValidator from "./BulkValidator.svelte";
   import SingleEditor from "./SingleEditor.svelte";
+  import WordFinder from "./WordFinder.svelte";
   import { verseToIds } from "./utils/common";
 
   enum Tab {
     single,
     bulk,
+    findWords,
   }
 
   let seed: string = "suostu rakentumaan tarinaksi";
@@ -36,6 +38,11 @@
       class:tab--active={chosenTab === Tab.bulk}
       on:click={() => setTab(Tab.bulk)}>Bulk</button
     >
+    <button
+      class="tab"
+      class:tab--active={chosenTab === Tab.findWords}
+      on:click={() => setTab(Tab.findWords)}>Find Words</button
+    >
   </div>
   <div class="section">
     {#if chosenTab === Tab.single}
@@ -43,6 +50,9 @@
     {/if}
     {#if chosenTab === Tab.bulk}
       <BulkValidator {seedIds} />
+    {/if}
+    {#if chosenTab === Tab.findWords}
+      <WordFinder {seedIds} />
     {/if}
   </div>
 </main>
@@ -65,10 +75,14 @@
   }
   .tab {
     background: #ccc;
+    font-size: 1rem;
     flex-grow: 1;
     margin: 0;
     cursor: pointer;
     border-radius: 0;
+  }
+  .tab:not(:last-child) {
+    border-right: 1px solid #aaa;
   }
   .tab--active {
     background: #fafafa;

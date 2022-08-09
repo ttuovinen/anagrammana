@@ -1,5 +1,6 @@
 <script lang="ts">
   import AnagramRow from "./AnagramRow.svelte";
+  import type { AnagramData } from "./types/types";
   import { checkLetters, nonAlphanumeric } from "./utils/common";
 
   export let seedIds: string[] = [];
@@ -79,17 +80,17 @@
   }
 </script>
 
-<div class="flex-col gap-1">
-  <div>
+<div class="flex-col gap-md">
+  <div class="flex-col gap-sm align-start">
     <label>
       <textarea
         class="w-100"
         rows="8"
         bind:value={inputText}
-        placeholder="Paste your anagrams here"
+        placeholder="Paste your anagrams for bulk validation"
       />
     </label>
-    <button on:click={handleBulkCheck}>Check</button>
+    <button on:click={handleBulkCheck}>Validate</button>
   </div>
   {#if anagrams.length}
     <h3 class:c-go={!faultyAnagrams.length}>
@@ -101,7 +102,7 @@
           faultyAnagrams.length > 1 ? "anagrams" : "anagram"
         }`}
       </h3>
-      <div class="flex-col gap-1">
+      <div class="flex-col gap-md">
         {#each faultyAnagrams as item}
           <AnagramRow data={item} />
         {/each}
@@ -109,7 +110,7 @@
     {/if}
     {#if duplicates.length}
       <h3 class="c-wait">Possible duplicates</h3>
-      <div class="flex-col gap-1">
+      <div class="flex-col gap-md">
         <ol>
           {#each duplicates as item}
             <li class="mb-1">{item}</li>

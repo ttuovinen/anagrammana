@@ -1,21 +1,45 @@
 <script lang="ts">
-  import { checkLetters } from "./utils/common";
+  import { checkLetters, hasNoExtraLetters, lengthSort } from "./utils/common";
 
   export let seedIds: string[] = [];
+  export let wordList: string[] = [];
 
   let inputText: string = "";
   let missing: string[] = [];
   let extra: string[] = [];
 
+  let wordSuggestions: string[] = [];
+
   $: {
     // Initialize missing letters array from seed ids
     missing = seedIds;
   }
-  $: perfect = !missing.length && !extra.length;
+
+  $: perfect = !missing.length && !extra.length && inputText.length;
   $: tooMuch = !!extra.length;
 
   function handleCheck() {
     [missing, extra] = checkLetters(seedIds, inputText);
+    if (perfect || tooMuch) {
+      wordSuggestions = [];
+    }
+    if (inputText.slice(-1) === " ") {
+      wordSuggestions = wordList
+        .filter((item) => hasNoExtraLetters(missing, item))
+        .sort(lengthSort);
+    } else {
+      const lastWord = inputText.split(" ").pop();
+
+      wordSuggestions =
+        !lastWord && !extra.length
+          ? []
+          : wordList
+              .filter((item) => item.startsWith(lastWord))
+              .filter((item) =>
+                hasNoExtraLetters(missing, item.substring(lastWord.length))
+              )
+              .sort(lengthSort);
+    }
   }
 </script>
 
@@ -25,6 +49,7 @@
     class:input-text--perfect={perfect}
     class:input-text--toomuch={tooMuch}
     type="text"
+    placeholder="Start composing your anagram"
     bind:value={inputText}
     on:input={handleCheck}
   />
@@ -41,6 +66,16 @@
     <div class="l c-stop">{item.charAt(0) + " "}</div>
   {/each}
 </div>
+{#if wordSuggestions.length}
+  <div class="l-row">
+    {#each wordSuggestions as item}
+      <div class="lowercase">
+        {item}
+      </div>
+    {/each}
+  </div>
+{/if}
+<div />
 
 <style>
   .input-text {

@@ -1,4 +1,6 @@
 <script lang="ts">
+  import type { AnagramData } from "./types/types";
+
   export let data: AnagramData;
 </script>
 

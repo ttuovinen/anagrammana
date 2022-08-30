@@ -22,14 +22,12 @@
     [missing, extra] = checkLetters(seedIds, inputText);
     if (perfect || tooMuch) {
       wordSuggestions = [];
-    }
-    if (inputText.slice(-1) === " ") {
+    } else if (inputText.slice(-1) === " ") {
       wordSuggestions = wordList
         .filter((item) => hasNoExtraLetters(missing, item))
         .sort(lengthSort);
     } else {
       const lastWord = inputText.split(" ").pop();
-
       wordSuggestions =
         !lastWord && !extra.length
           ? []
@@ -55,11 +53,16 @@
   />
 </label>
 <div class="l-row">
-  {#each missing as item}
+  {#each missing.slice(0, 100) as item}
     <div class="l c-wait">
       {item.charAt(0)}
     </div>
   {/each}
+  {#if missing.length > 100}
+    <div class="lowercase italic">
+      (...plus {missing.length - 100} other characters)
+    </div>
+  {/if}
 </div>
 <div class="l-row">
   {#each extra as item}
@@ -68,11 +71,16 @@
 </div>
 {#if wordSuggestions.length}
   <div class="l-row">
-    {#each wordSuggestions as item}
+    {#each wordSuggestions.slice(0, 100) as item}
       <div class="lowercase">
         {item}
       </div>
     {/each}
+    {#if wordSuggestions.length > 100}
+      <div class="lowercase italic">
+        (...plus {wordSuggestions.length - 100} other words)
+      </div>
+    {/if}
   </div>
 {/if}
 <div />

@@ -4,7 +4,7 @@ export const specialChars = /[^ a-záàâäãåçéèêëíìîïñóòôöõú�
 export const alphaSort = (a: string, b: string) => a.localeCompare(b);
 export const lengthSort = (a: string, b: string) => b.length - a.length;
 
-const difference = (arr1: string[], arr2: string[]) =>
+export const difference = (arr1: string[], arr2: string[]) =>
   arr1.filter((item) => !arr2.includes(item));
 
 export const verseToIds = (verse: string) => {

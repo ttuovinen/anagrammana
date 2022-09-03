@@ -2,7 +2,7 @@
   import { checkLetters, hasNoExtraLetters, lengthSort } from "./utils/common";
 
   export let seedIds: string[] = [];
-  export let wordList: string[] = [];
+  export let suggestionList: string[] = [];
 
   let inputText: string = "";
   let missing: string[] = [];
@@ -23,7 +23,7 @@
     if (perfect || tooMuch) {
       wordSuggestions = [];
     } else if (inputText.slice(-1) === " ") {
-      wordSuggestions = wordList
+      wordSuggestions = suggestionList
         .filter((item) => hasNoExtraLetters(missing, item))
         .sort(lengthSort);
     } else {
@@ -31,7 +31,7 @@
       wordSuggestions =
         !lastWord && !extra.length
           ? []
-          : wordList
+          : suggestionList
               .filter((item) => item.startsWith(lastWord))
               .filter((item) =>
                 hasNoExtraLetters(missing, item.substring(lastWord.length))
@@ -90,7 +90,6 @@
     background: hsl(45, 100%, 80%);
     width: 420px;
     max-width: 100%;
-    font-family: "Courier New", Courier, monospace;
   }
   .input-text--perfect {
     background: hsl(90, 100%, 85%);
@@ -105,7 +104,7 @@
     justify-content: center;
     gap: 8px;
     text-transform: uppercase;
-    font-family: "Courier New", Courier, monospace;
+    font-family: var(--mono-font);
     margin: 1rem 1rem 0;
     min-height: 2rem;
   }

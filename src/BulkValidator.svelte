@@ -6,6 +6,7 @@
   export let seedIds: string[] = [];
 
   let inputText: string = "";
+  let pristine = true;
   let anagrams: AnagramData[] = [];
   let duplicates: string[] = [];
 
@@ -14,6 +15,7 @@
   );
 
   function handleBulkCheck() {
+    pristine = false;
     const data: AnagramData[] = [];
     const rows: string[] = inputText
       .split("\n")
@@ -92,31 +94,45 @@
     </label>
     <button on:click={handleBulkCheck}>Validate</button>
   </div>
-  {#if anagrams.length}
-    <h3 class:c-go={!faultyAnagrams.length}>
-      {`${anagrams.length - faultyAnagrams.length} / ${anagrams.length} OK`}
-    </h3>
-    {#if faultyAnagrams.length}
-      <h3 class="c-stop">
-        {`${faultyAnagrams.length} faulty ${
-          faultyAnagrams.length > 1 ? "anagrams" : "anagram"
-        }`}
-      </h3>
-      <div class="flex-col gap-md">
-        {#each faultyAnagrams as item}
-          <AnagramRow data={item} />
-        {/each}
-      </div>
-    {/if}
-    {#if duplicates.length}
-      <h3 class="c-wait">Possible duplicates</h3>
-      <div class="flex-col gap-md">
-        <ol>
-          {#each duplicates as item}
-            <li class="mb-1">{item}</li>
-          {/each}
-        </ol>
-      </div>
+  {#if !pristine}
+    {#if !seedIds.length}
+      <div class={"italic c-wait"}>Add your seed phrase first</div>
+    {:else if anagrams.length}
+      <h2 class:c-go={!faultyAnagrams.length}>
+        {`${anagrams.length - faultyAnagrams.length} / ${anagrams.length} OK`}
+      </h2>
+      {#if faultyAnagrams.length}
+        <div class="flex-col gap-sm align-start">
+          <h2 class="c-stop">
+            {`${faultyAnagrams.length} faulty ${
+              faultyAnagrams.length > 1 ? "anagrams" : "anagram"
+            }`}
+          </h2>
+          <div class="flex-col gap-sm">
+            {#each faultyAnagrams as item}
+              <AnagramRow data={item} />
+            {/each}
+          </div>
+        </div>
+      {/if}
+      {#if duplicates.length}
+        <div class="flex-col gap-sm align-start">
+          <h2 class="c-wait">Possible duplicates</h2>
+          <div class="flex-col gap-md">
+            <ol>
+              {#each duplicates as item}
+                <li class="mb-1 anagram">{item}</li>
+              {/each}
+            </ol>
+          </div>
+        </div>
+      {/if}
     {/if}
   {/if}
 </div>
+
+<style>
+  .anagram {
+    font-size: 1.1em;
+  }
+</style>

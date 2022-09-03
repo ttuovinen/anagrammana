@@ -1,16 +1,36 @@
 <script lang="ts">
-  import { findPossibleWords } from "./utils/common";
+  import { difference, findPossibleWords } from "./utils/common";
 
   export let seedIds: string[] = [];
   export let addToWords: (value: string[]) => void;
+  export let suggestionList: string[] = [];
 
   let inputText: string = "";
   let pristine = true;
   let possibleWords: string[] = [];
+  let snack: string | null = null;
+
+  $: newWords = difference(possibleWords, suggestionList);
+
+  function showSnack(text: string) {
+    snack = text;
+    setTimeout(() => {
+      snack = null;
+    }, 3000);
+  }
 
   function handleFindWords() {
     pristine = false;
     possibleWords = findPossibleWords(seedIds, inputText);
+  }
+
+  function copyToClipboard(words) {
+    navigator.clipboard.writeText(words.join("\n"));
+    showSnack(`${words.length} words copied to clipboard!`);
+  }
+  function handleAddToSuggestions() {
+    addToWords(newWords);
+    showSnack(`${newWords.length} words added to suggestions!`);
   }
 </script>
 
@@ -26,27 +46,73 @@
     </label>
     <button on:click={handleFindWords}>Find possible words for anagrams</button>
   </div>
-  {#if possibleWords.length || !pristine}
+  {#if !pristine}
     <div class="flex-col gap-sm">
       <div class={possibleWords.length ? "italic c-go" : "italic c-wait"}>
-        {possibleWords.length} possible words found
+        {#if !seedIds.length}
+          Add your seed phrase first
+        {:else}
+          {possibleWords.length} possible words found (of which {newWords.length}
+          new)
+        {/if}
       </div>
       <div class="flex-row gap-sm">
         {#if possibleWords.length}
           <button
-            on:click={() =>
-              navigator.clipboard.writeText(possibleWords.join("\n"))}
-            >Copy to clipboard</button
+            class="button--outlined"
+            disabled={!newWords.length}
+            on:click={handleAddToSuggestions}>Add to word suggestions</button
           >
-          <button on:click={() => addToWords(possibleWords)}
-            >Add to word suggestions</button
+          <button
+            class="button--outlined"
+            on:click={() => copyToClipboard(possibleWords)}
           >
+            Copy all words to clipboard
+          </button>
+          <button
+            class="button--outlined"
+            disabled={!newWords.length}
+            on:click={() => copyToClipboard(newWords)}
+          >
+            Copy new words to clipboard
+          </button>
         {/if}
       </div>
     </div>
 
-    <div class="pre-wrap">
+    <div class="pre-wrap mono-font">
       {possibleWords.join("\n")}
     </div>
   {/if}
+
+  {#if snack}
+    <div class="snack" aria-live="assertive">
+      {snack}
+    </div>
+  {/if}
 </div>
+
+<style>
+  .snack {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    border-radius: 3px;
+    padding: 1rem 2rem;
+    box-shadow: 1px 1px 3px #0003;
+    background: hsl(45, 100%, 80%);
+    color: black;
+    opacity: 0;
+    animation: fade 2.5s linear;
+  }
+  @keyframes fade {
+    0%,
+    100% {
+      opacity: 0;
+    }
+    20%,
+    80% {
+      opacity: 1;
+    }
+  }
+</style>

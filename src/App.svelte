@@ -3,6 +3,7 @@
   import SingleEditor from "./SingleEditor.svelte";
   import WordFinder from "./WordFinder.svelte";
   import { textToWords, verseToIds } from "./utils/common";
+  import Logo from "./Logo.svelte";
 
   enum Tab {
     single,
@@ -29,7 +30,7 @@
 
 <main>
   <header class="site-header">
-    <h1>ANAGRAMMANA</h1>
+    <Logo />
   </header>
   <div class="section text-center flex-col gap-md">
     <label class="flex-col gap-sm align-center">
@@ -104,14 +105,16 @@
   }
 
   .site-header {
-    padding: 36px 9px;
+    padding: clamp(2rem, 8vw, 64px) 2em;
     color: white;
     background: #306e6b;
     text-align: center;
   }
+
   .section {
     padding: 2em;
   }
+
   .tabs {
     display: flex;
     border-top: 1px solid var(--col-border);
@@ -134,10 +137,12 @@
     color: black;
     border: none;
   }
+
   .input-text {
     width: 420px;
     max-width: 100%;
   }
+
   .site-footer {
     font-size: 0.9rem;
     text-align: center;

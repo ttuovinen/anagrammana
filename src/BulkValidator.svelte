@@ -2,10 +2,10 @@
   import AnagramRow from "./AnagramRow.svelte";
   import type { AnagramData } from "./types/types";
   import { checkLetters, nonAlphanumeric } from "./utils/common";
+  import { bulkInput } from "./stores";
 
   export let seedIds: string[] = [];
 
-  let inputText: string = "";
   let pristine = true;
   let anagrams: AnagramData[] = [];
   let duplicates: string[] = [];
@@ -17,7 +17,7 @@
   function handleBulkCheck() {
     pristine = false;
     const data: AnagramData[] = [];
-    const rows: string[] = inputText
+    const rows: string[] = $bulkInput
       .split("\n")
       .map((item) => item.trim())
       .filter((item) => item);
@@ -88,11 +88,18 @@
       <textarea
         class="w-100"
         rows="8"
-        bind:value={inputText}
+        bind:value={$bulkInput}
         placeholder="Paste your anagrams for bulk validation"
       />
     </label>
-    <button on:click={handleBulkCheck}>Validate</button>
+    <div class="flex-row justify-between w-100">
+      <button on:click={handleBulkCheck}>Validate</button>
+      {#if $bulkInput.length}
+        <button class="button--text" on:click={() => bulkInput.set("")}
+          >clear</button
+        >
+      {/if}
+    </div>
   </div>
   {#if !pristine}
     {#if !seedIds.length}

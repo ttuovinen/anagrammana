@@ -1,11 +1,11 @@
 <script lang="ts">
   import { difference, findPossibleWords } from "./utils/common";
+  import { findInput } from "./stores";
 
   export let seedIds: string[] = [];
   export let addToWords: (value: string[]) => void;
   export let suggestionList: string[] = [];
 
-  let inputText: string = "";
   let pristine = true;
   let possibleWords: string[] = [];
   let snack: string | null = null;
@@ -21,7 +21,7 @@
 
   function handleFindWords() {
     pristine = false;
-    possibleWords = findPossibleWords(seedIds, inputText);
+    possibleWords = findPossibleWords(seedIds, $findInput);
   }
 
   function copyToClipboard(words) {
@@ -40,11 +40,20 @@
       <textarea
         class="w-100"
         rows="8"
-        bind:value={inputText}
+        bind:value={$findInput}
         placeholder="Paste any text (try e.g. some book from the Gutenberg project)"
       />
     </label>
-    <button on:click={handleFindWords}>Find possible words for anagrams</button>
+    <div class="flex-row justify-between w-100">
+      <button on:click={handleFindWords}
+        >Find possible words for anagrams</button
+      >
+      {#if $findInput.length}
+        <button class="button--text" on:click={() => findInput.set("")}
+          >clear</button
+        >
+      {/if}
+    </div>
   </div>
   {#if !pristine}
     <div class="flex-col gap-sm">

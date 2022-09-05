@@ -1,10 +1,10 @@
 <script lang="ts">
   import { checkLetters, hasNoExtraLetters, lengthSort } from "./utils/common";
+  import { singleInput } from "./stores";
 
   export let seedIds: string[] = [];
   export let suggestionList: string[] = [];
 
-  let inputText: string = "";
   let missing: string[] = [];
   let extra: string[] = [];
 
@@ -15,24 +15,24 @@
     missing = seedIds;
   }
 
-  $: perfect = !missing.length && !extra.length && inputText.length;
+  $: perfect = !missing.length && !extra.length && $singleInput.length;
   $: tooMuch = !!extra.length;
 
   function handleCheck() {
-    [missing, extra] = checkLetters(seedIds, inputText);
+    [missing, extra] = checkLetters(seedIds, $singleInput);
     if (perfect || tooMuch) {
       wordSuggestions = [];
-    } else if (inputText.slice(-1) === " ") {
+    } else if ($singleInput.slice(-1) === " ") {
       wordSuggestions = suggestionList
         .filter((item) => hasNoExtraLetters(missing, item))
         .sort(lengthSort);
     } else {
-      const lastWord = inputText.split(" ").pop();
+      const lastWord = $singleInput.split(" ").pop();
       wordSuggestions =
         !lastWord && !extra.length
           ? []
           : suggestionList
-              .filter((item) => item.startsWith(lastWord))
+              .filter((item) => item.startsWith(lastWord.toLowerCase()))
               .filter((item) =>
                 hasNoExtraLetters(missing, item.substring(lastWord.length))
               )
@@ -48,7 +48,7 @@
     class:input-text--toomuch={tooMuch}
     type="text"
     placeholder="Start composing your anagram"
-    bind:value={inputText}
+    bind:value={$singleInput}
     on:input={handleCheck}
   />
 </label>

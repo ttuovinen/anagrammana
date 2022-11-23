@@ -1,9 +1,11 @@
 <script lang="ts">
   import { checkLetters, hasNoExtraLetters, lengthSort } from "./utils/common";
   import { singleInput } from "./stores";
+  import { bulkInput } from "./stores";
 
   export let seedIds: string[] = [];
   export let suggestionList: string[] = [];
+  export let blink: () => void = () => {};
 
   let missing: string[] = [];
   let extra: string[] = [];
@@ -39,6 +41,21 @@
               .sort(lengthSort);
     }
   }
+
+  function appendToBulkInput() {
+    if ($bulkInput && $bulkInput[$bulkInput.length - 1] !== "\n") {
+      $bulkInput += "\n";
+    }
+    $bulkInput += $singleInput;
+    $singleInput = "";
+    blink();
+  }
+
+  function appendOnEnter(event: KeyboardEvent) {
+    if (perfect && event.key === "Enter") {
+      appendToBulkInput();
+    }
+  }
 </script>
 
 <label class="text-center">
@@ -50,6 +67,7 @@
     placeholder="Start composing your anagram"
     bind:value={$singleInput}
     on:input={handleCheck}
+    on:keydown={appendOnEnter}
   />
 </label>
 <div class="l-row">

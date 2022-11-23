@@ -14,6 +14,7 @@
   let seed: string = "";
   let wordSuggestions: string = "";
   let chosenTab: Tab = Tab.single;
+  let blinking = false;
 
   $: seedIds = verseToIds(seed);
   $: suggestionList = textToWords(wordSuggestions);
@@ -25,6 +26,13 @@
   function addToWords(value: string[]) {
     suggestionList = [...new Set([...suggestionList, ...value])];
     wordSuggestions = suggestionList.join(" ");
+  }
+
+  function blinkValidateTab() {
+    blinking= true
+    setTimeout(function() {
+      blinking= false
+    }, 300)
   }
 </script>
 
@@ -70,12 +78,13 @@
     <button
       class="tab"
       class:tab--active={chosenTab === Tab.bulk}
+      class:tab--blink={blinking}
       on:click={() => setTab(Tab.bulk)}>Validate</button
     >
   </div>
   <div class="section">
     {#if chosenTab === Tab.single}
-      <SingleEditor {seedIds} {suggestionList} />
+      <SingleEditor {seedIds} {suggestionList} blink={blinkValidateTab} />
     {/if}
     {#if chosenTab === Tab.bulk}
       <BulkValidator {seedIds} />
@@ -125,7 +134,7 @@
     font-size: 1rem;
     width: calc(100% / 3);
     margin: 0;
-
+    transition: color 150ms ease-out;
     cursor: pointer;
     border-radius: 0;
   }
@@ -136,6 +145,9 @@
     background: var(--col-background);
     color: black;
     border: none;
+  }
+  .tab--blink {
+    color: hsl(90, 100%, 85%);
   }
 
   .input-text {

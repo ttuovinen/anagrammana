@@ -90,6 +90,10 @@ input:disabled {
   color: #ccc;
 }
 
+textarea {
+  resize: vertical;
+}
+
 button {
   color: white;
   background-color: var(--col-primary);
@@ -131,7 +135,11 @@ button:disabled {
 .mb-1 {
   margin-bottom: 1em;
 }
-.w-100 {
+.w-420 {
+  width: 420px;
+  max-width: 100%;
+}
+.w-full {
   width: 100%;
 }
 .c-go {
@@ -148,6 +156,9 @@ button:disabled {
 }
 .text-center {
   text-align: center;
+}
+.text-right {
+  text-align: right;
 }
 .lowercase {
   text-transform: lowercase;

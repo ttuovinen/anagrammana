@@ -19,18 +19,28 @@
     }, 3000);
   }
 
-  function handleFindWords() {
+  function handleFindWords(event: MouseEvent) {
     pristine = false;
     possibleWords = findPossibleWords(seedIds, $findInput);
+    (event.target as HTMLButtonElement).scrollIntoView({
+      behavior: "smooth",
+    });
   }
 
-  function copyToClipboard(words) {
+  function copyToClipboard(words: string[]) {
     navigator.clipboard.writeText(words.join("\n"));
     showSnack(`${words.length} words copied to clipboard!`);
   }
+
   function handleAddToSuggestions() {
     addToWords(newWords);
     showSnack(`${newWords.length} words added to suggestions!`);
+  }
+
+  function clear() {
+    findInput.set("");
+    pristine = true;
+    possibleWords = [];
   }
 </script>
 
@@ -38,20 +48,18 @@
   <div class="flex-col gap-sm align-start">
     <label>
       <textarea
-        class="w-100"
+        class="w-full"
         rows="8"
         bind:value={$findInput}
         placeholder="Paste any text (try e.g. some book from the Gutenberg project)"
       />
     </label>
-    <div class="flex-row justify-between w-100">
+    <div class="flex-row justify-between w-full">
       <button on:click={handleFindWords}
         >Find possible words for anagrams</button
       >
       {#if $findInput.length}
-        <button class="button--text" on:click={() => findInput.set("")}
-          >clear</button
-        >
+        <button class="button--text" on:click={clear}>clear</button>
       {/if}
     </div>
   </div>

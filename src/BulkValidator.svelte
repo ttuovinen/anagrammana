@@ -14,7 +14,7 @@
     (item) => item.missing.length || item.extra.length
   );
 
-  function handleBulkCheck() {
+  function handleBulkCheck(event: MouseEvent) {
     pristine = false;
     const data: AnagramData[] = [];
     const rows: string[] = $bulkInput
@@ -79,6 +79,17 @@
     duplicates = Object.values(buckets)
       .filter((items: string[]) => items.length > 1)
       .map((items: string[]) => items.join(" | "));
+
+    (event.target as HTMLButtonElement).scrollIntoView({
+      behavior: "smooth",
+    });
+  }
+
+  function clear() {
+    pristine = true;
+    bulkInput.set("");
+    anagrams = [];
+    duplicates = [];
   }
 </script>
 
@@ -86,18 +97,16 @@
   <div class="flex-col gap-sm align-start">
     <label>
       <textarea
-        class="w-100"
+        class="w-full"
         rows="8"
         bind:value={$bulkInput}
         placeholder="Paste your anagrams for bulk validation"
       />
     </label>
-    <div class="flex-row justify-between w-100">
+    <div class="flex-row justify-between w-full">
       <button on:click={handleBulkCheck}>Validate</button>
       {#if $bulkInput.length}
-        <button class="button--text" on:click={() => bulkInput.set("")}
-          >clear</button
-        >
+        <button class="button--text" on:click={clear}>clear</button>
       {/if}
     </div>
   </div>

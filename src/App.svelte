@@ -2,7 +2,7 @@
   import BulkValidator from "./BulkValidator.svelte";
   import SingleEditor from "./SingleEditor.svelte";
   import WordFinder from "./WordFinder.svelte";
-  import { textToWords, verseToIds } from "./utils/common";
+  import { findPossibleWords, textToWords, verseToIds } from "./utils/common";
   import Logo from "./Logo.svelte";
 
   enum Tab {
@@ -15,6 +15,7 @@
   let wordSuggestions: string = "";
   let chosenTab: Tab = Tab.single;
   let blinking = false;
+  let pristine = false;
 
   $: seedIds = verseToIds(seed);
   $: suggestionList = textToWords(wordSuggestions);
@@ -28,11 +29,20 @@
     wordSuggestions = suggestionList.join(" ");
   }
 
+  function unpristine() {
+    pristine = false;
+  }
+
   function blinkValidateTab() {
-    blinking= true
-    setTimeout(function() {
-      blinking= false
-    }, 300)
+    blinking = true;
+    setTimeout(function () {
+      blinking = false;
+    }, 300);
+  }
+
+  function cleanup() {
+    wordSuggestions = findPossibleWords(seedIds, wordSuggestions).join(" ");
+    pristine = true;
   }
 </script>
 
@@ -44,9 +54,10 @@
     <label class="flex-col gap-sm align-center">
       <h2>Seed</h2>
       <input
-        class="input-text"
+        class="w-420"
         type="text"
         bind:value={seed}
+        on:input={unpristine}
         placeholder="First write your seed phrase"
       />
     </label>
@@ -56,12 +67,20 @@
           ? ` (${suggestionList.length})`
           : ""}
       </h2>
-      <textarea
-        class="input-text"
-        bind:value={wordSuggestions}
-        rows="4"
-        placeholder="Paste your word list if you'd like to have suggestions – or use Find  words tool with any text source"
-      />
+      <div class="w-420">
+        <textarea
+          class="w-full"
+          bind:value={wordSuggestions}
+          on:input={unpristine}
+          rows="4"
+          placeholder="Paste your word list if you'd like to have suggestions – or use Find  words tool with any text source"
+        />
+        {#if wordSuggestions && !pristine}
+          <div class="w-full text-right">
+            <button class="button--text" on:click={cleanup}>clean up</button>
+          </div>
+        {/if}
+      </div>
     </label>
   </div>
   <div class="tabs">
@@ -95,7 +114,7 @@
   </div>
 </main>
 <footer class="site-footer">
-  Tools for anagrammatic writing | Teemu T. Tuovinen 2021-22
+  Tools for anagrammatic writing | Teemu T. Tuovinen 2021-23
 </footer>
 
 <style>
@@ -148,11 +167,6 @@
   }
   .tab--blink {
     color: hsl(90, 100%, 85%);
-  }
-
-  .input-text {
-    width: 420px;
-    max-width: 100%;
   }
 
   .site-footer {

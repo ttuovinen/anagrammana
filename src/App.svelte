@@ -58,7 +58,7 @@
         type="text"
         bind:value={seed}
         on:input={unpristine}
-        placeholder="First write your seed phrase"
+        placeholder="First write your seed phrase here"
       />
     </label>
     <label class="flex-col gap-sm align-center">
@@ -73,7 +73,7 @@
           bind:value={wordSuggestions}
           on:input={unpristine}
           rows="4"
-          placeholder="Paste your word list if you'd like to have suggestions – or use Find  words tool with any text source"
+          placeholder="For word suggestions, use Find words tool with any text source you like (or paste your word list here if you already have one)"
         />
         {#if wordSuggestions && !pristine}
           <div class="w-full text-right">
@@ -114,7 +114,15 @@
   </div>
 </main>
 <footer class="site-footer">
-  Tools for anagrammatic writing | Teemu T. Tuovinen 2021-23
+  Tools for anagrammatic writing<br />
+  Teemu T. Tuovinen 2021-23<br />
+  <a
+    href="https://github.com/ttuovinen/anagrammana"
+    target="_blank"
+    rel="noopener">git</a
+  >
+  |
+  <a href="https://nokturno.fi" target="_blank" rel="noopener">nokturno.fi</a>
 </footer>
 
 <style>
@@ -173,6 +181,10 @@
     font-size: 0.9rem;
     text-align: center;
     margin: 0 2rem 2rem;
+    color: white;
+    line-height: 1.5;
+  }
+  .site-footer a {
     color: white;
   }
 </style>

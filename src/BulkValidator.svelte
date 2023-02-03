@@ -100,7 +100,7 @@
         class="w-full"
         rows="8"
         bind:value={$bulkInput}
-        placeholder="Paste your anagrams for bulk validation"
+        placeholder="Paste your anagrams here for bulk validation"
       />
     </label>
     <div class="flex-row justify-between w-full">

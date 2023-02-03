@@ -15,6 +15,9 @@
   $: {
     // Initialize missing letters array from seed ids
     missing = seedIds;
+    if ($singleInput.length) {
+      handleCheck();
+    }
   }
 
   $: perfect = !missing.length && !extra.length && $singleInput.length;
@@ -66,7 +69,6 @@
     type="text"
     placeholder="Start composing your anagram"
     bind:value={$singleInput}
-    on:input={handleCheck}
     on:keydown={appendOnEnter}
   />
 </label>

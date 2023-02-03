@@ -1,6 +1,6 @@
 Toolkit for your anagrammatic writing needs. Made with Svelte.
 
-Live demo: https://anagrammana.netlify.app/
+Source for https://anagrammana.nokturno.fi/
 
 ---
 
